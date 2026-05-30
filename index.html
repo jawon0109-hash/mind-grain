@@ -1431,10 +1431,7 @@ function yaoToTrigramIdx(lines){
 }
 function extractYao(){
   state.N = Math.floor(Math.random() * 6) + 1;
-  let readYao;
-  if(state.mode === 'today') readYao = state.N;
-  else if(state.timeDir === 'present') readYao = state.N - 1;
-  else readYao = state.N + 1;
+  let readYao = adjustedYaoFromDraw(state.N);
   if(readYao < 1) readYao = 1;
   if(readYao > 6) readYao = 6;
   state.readYao = readYao;
@@ -1446,11 +1443,8 @@ function extractYao(){
 }
 function extractDong(){
   state.dongN = Math.floor(Math.random() * 6) + 1;
-  let d;
-  if(state.mode === 'today') d = state.dongN;
-  else if(state.timeDir === 'present') d = state.dongN;
-  else d = state.dongN + 1;
-  if(d > 6){
+  const d = adjustedYaoFromDraw(state.dongN);
+  if(d < 1 || d > 6){
     state.changeYao = 0;
     state.changedHexIdx = -1;
   } else {
@@ -1459,6 +1453,11 @@ function extractDong(){
   }
   goTo('s-dong-done');
   setTimeout(renderResult, 1200);
+}
+function adjustedYaoFromDraw(n){
+  if(state.mode === 'today') return n;
+  if(state.timeDir === 'present') return n - 1;
+  return n + 1;
 }
 function skipDong(){
   state.changeYao = 0;
