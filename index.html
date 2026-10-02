@@ -3933,17 +3933,23 @@ function selectTime(dir){
   document.getElementById('btn-future').classList.toggle('selected', dir === 'future');
   checkQuestion();
 }
+function selectedTimeDir(){
+  if(document.getElementById('btn-present').classList.contains('selected')) return 'present';
+  if(document.getElementById('btn-future').classList.contains('selected')) return 'future';
+  return null;
+}
 function checkQuestion(){
   const q = document.getElementById('question-input').value.trim();
-  document.getElementById('btn-start-build').disabled = !(q && state.timeDir);
+  document.getElementById('btn-start-build').disabled = !(q && selectedTimeDir());
 }
 function startLife(){
   const q = document.getElementById('question-input').value.trim();
-  if(!q || !state.timeDir) return;
+  const dir = selectedTimeDir();
+  if(!q || !dir) return;
   state = freshState();
   state.mode = 'life';
   state.question = q;
-  state.timeDir = document.getElementById('btn-future').classList.contains('selected') ? 'future' : 'present';
+  state.timeDir = dir;
   setBuildCopy();
   resetCoins();
   goTo('s-build');
